@@ -1,16 +1,16 @@
 class PriorityQueue(object):
     def __init__(self):
         self.queue = []
- 
+
     def __str__(self):
-        return ' '.join([str(i) for i in self.queue])
- 
+        return " ".join([str(i) for i in self.queue])
+
     def is_empty(self):
         return len(self.queue) == 0
- 
+
     def queue(self, data):
         self.queue.append(data)
- 
+
     def dequeue(self):
         try:
             max_val = 0
@@ -21,3 +21,4 @@ class PriorityQueue(object):
             del self.queue[max_val]
             return item
         except IndexError as ie:
+            raise ie

@@ -5,4 +5,6 @@ class NoPathError(Exception):
 
 class IllegalStartPositionError(Exception):
     def __init__(self, position):
-        super().__init__(f"the position {position} is already occupied, kindly pick a better position")
+        super().__init__(
+            f"the position {position} is already occupied, kindly pick a better position"
+        )

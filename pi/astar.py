@@ -9,11 +9,11 @@ from constants import OCCUPIED, FREE
 
 class AStar(object):
     def __init__(
-            self,
-            grid  : List[List[np.float64]],
-            start : Tuple[np.float64],
-            goal  : Tuple[np.float64],
-            ):
+        self,
+        grid: List[List[np.float64]],
+        start: Tuple[np.float64],
+        goal: Tuple[np.float64],
+    ):
         super().__init__()
 
         self.grid = grid
@@ -25,5 +25,4 @@ class AStar(object):
 
     def find_path(self):
         if self.grid[self.start] == OCCUPIED:
-            raise IllegalStartPositionError(self.start)         
-        
+            raise IllegalStartPositionError(self.start)
