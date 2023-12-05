@@ -1,0 +1,2 @@
+OCCUPIED = 1.0
+FREE = 0.0
