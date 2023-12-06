@@ -5,3 +5,7 @@ P_FREE = 0.4
 P_OCC = 0.6
 P_INIT = 0.5
 DEC_BOUNDARY = 0.5
+
+MAP_SIZE = (5,5) # size of the
+L2R = lambda x,y,s : y*s[1] + x # Left to right
+T2B = lambda x,y,s : x*s[0] + y # Top to bottom
