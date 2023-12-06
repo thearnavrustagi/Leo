@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from log_odds import log_odds, retrieve_p
-from constants import MAP_SIZE, L2R, T2B, DEC_BOUNDARY, P_INIT
+from constants import MAP_SIZE, L2R, T2B, DEC_BOUNDARY, P_INIT, FIG_SIZE
 
 class Mapping(object):
     def __init__(self,
@@ -29,6 +29,9 @@ class Mapping(object):
             probabilities:List[np.float64]) -> None:
 
         for (x, y), p in zip(positions, probabilities):
+            if x not in range(0,MAP_SIZE[0]): continue
+            if y not in range(0,MAP_SIZE[1]): continue
+
             self.log_odds_map[x,y] += log_odds(p)
             print(self.log_odds_map[x,y])
 
@@ -47,7 +50,7 @@ class Mapping(object):
                 plt.grid(True)
                 plt.gca().set_aspect('equal')
             figure = plt.gcf()
-            figure.set_size_inches(16,12)
+            figure.set_size_inches(*FIG_SIZE)
             plt.savefig(f"{directory}/{im}.png")
         plt.savefig(f"final_map.png")
 
@@ -63,4 +66,3 @@ if __name__ == "__main__":
     mapping.update_log_odds([(1,1),(2,1),(3,1),(4,1)],[0.4,0.4,0.4,0.6])
 
     mapping.export()
-

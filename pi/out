@@ -1,4 +1,4 @@
-)0[1;67r[m[4l[?7h[H[J[67;1H======================================== CONTROLS ========================================
+[?1049h[22;0;0t[1;55r(B[m[4l[?7h[?1h=[H[2J[?1l>[55;1H[?1049l[23;0;0t[?1l>======================================== CONTROLS ========================================
 KEY_UP   : to move forward
 KEY_DOWN : to move down
 KEY_RIGHT: to move right
@@ -14,10 +14,17 @@ R : right
 S : stop
 U : read
           
-sending F
-sending F
-sending M
-recv : 0
-0
-0.0
-sending R
+sending b'M'
+sending b'S'
+recv : 2
+f: 1 (3, 3) (0, 1)
+f: 2 (3, 3) (0, 1)
+f: 3 (3, 3) (0, 1)
+probabilities : [0.4, 0.4, 0.6], [(3, 4), (3, 5), (3, 6)]
+map (5, 5)
+3 4
+False False
+-0.4054651081081643
+map (5, 5)
+map (5, 5)
+sending b'M'
