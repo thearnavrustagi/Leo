@@ -4,28 +4,30 @@ from time import sleep
 
 from errors import QuitError
 from constants import P_FREE, P_OCC, MAP_SIZE, L2R
+from constants import FWD, RGT, BWD, LFT, STATES, INITIAL_POSN
 from mapping import Mapping
 
 class Controller(object):
   def __init__(
           self,
-          map_specification:str="map_spec.txt"):
+          initial_position=INITIAL_POSN,
+          initial_state=INITIAL_STATE,
+          map_args=(MAP_SIZE,L2R,1)):
     super().__init__()
     self.arduino = serial.Serial('/dev/ttyUSB0', 9600) 
     self.screen = curses.initscr()
+    self.inital_position = initial_position
+    self.initial_state = initial_state
 
-    self.mapping = Mapping(MAP_SIZE, L2R, 1)
+    self.position = initial_position
+    self.state = initial_state
+
+    self.mapping = Mapping(*map_args)
 
     curses.noecho()
     curses.cbreak()
     self.screen.keypad(True)
 
-  def start_mapping(self):
-    self.__mapping = True
-
-  def stop_mapping(self):
-    self.__mapping = False
-  
   def getch(self) -> str:
     return self.screen.getch()
 
@@ -37,38 +39,55 @@ class Controller(object):
     if char == ord('q'):
       raise QuitError("bye bye")
     elif char == curses.KEY_UP:
-      print("sending F")
-      self.arduino.write(b'F') 
+      self.forward()
     elif char == curses.KEY_DOWN:
-      print("sending B")
-      self.arduino.write(b'B')
+      self.backward()
     elif char == curses.KEY_LEFT:
-      print("sending L")
-      self.arduino.write(b'L')
+      self.left()
     elif char == curses.KEY_RIGHT:
-      print("sending R")
-      self.arduino.write(b'R')
+      self.right()
     elif char == ord(' '):
-      print("sending S")
-      self.arduino.write(b'S')
+      self.write('S')
     elif char == ord('m') or char == ord("M"):
-      print("sending M")
-      self.arduino.write(b'M')
+      self.write('M')
       resp = str(self.recv()).split(":")
-      self.arduino.write(b'S')
+      self.write(b'S')
       print(f"recv : {int(resp[1])}")
       i = int(resp[1])
-      self.create_map(i)
+      self.update_map(i)
     else:
-      self.arduino.write(bytes(char))
+      self.write(bytes(char.upper()))
   
+  def write(self,c):
+      print("sending",c)
+      self.arduino.write(bytes(c))
+
+  def forward(self) -> None:
+      self.position = tuple(map(lambda a,b: a+b, self.position,self.state))
+      self.write('F')
+
+  def backward(self) -> None:
+      self.position = tuple(map(lambda a,b: a-b, self.position,self.state))
+      self.write('B')
+
+  def right(self) -> None:
+      self.state = STATES[(self.position.index(self.state)+1)%len(self.position)]
+      self.write('R')
+
+  def left(self) -> None:
+      rpos = self.position
+      self.state = STATES[(rpos.index(self.state)-1)%len(rpos)]
+      self.write('L')
+
   def create_map(self, grids):
       probabilities = [P_FREE]*grids + [P_OCC]
-      print(probabilities)
-      #probabilities = (probabilities)
+      def fnc (g,a,b): 
+        return (a[0]+g*b[0],a[1]+g*b[1])
 
-      print(f"probabilities : {probabilities}")
+      positions = tuple(map(fnc, range(1,grids+2), self.position,self.state))
 
+      print(f"probabilities : {probabilities}, {positions}")
+      self.mapping.update_log_odds(positions, probabilities)
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}

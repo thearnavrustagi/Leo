@@ -42,10 +42,12 @@ class Mapping(object):
             for i, (m,t) in enumerate(maps):
                 plt.subplot(1, 2, i + 1)
                 plt.title(t)
-                plt.imshow(m, cmap="binary", vmin=0, vmax=1)
+                plt.pcolor(m, cmap="binary", vmin=0, vmax=1, edgecolors="white",linewidths=1)
                 plt.colorbar()
+                plt.grid(True)
+                plt.gca().set_aspect('equal')
             figure = plt.gcf()
-            figure.set_size_inches(12,12)
+            figure.set_size_inches(16,12)
             plt.savefig(f"{directory}/{im}.png")
         plt.savefig(f"final_map.png")
 
