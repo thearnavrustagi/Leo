@@ -3,8 +3,7 @@ import curses
 from time import sleep
 
 from errors import QuitError
-from log_odds import compute_map_probability
-from constants import P_FREE, P_OCC
+from constants import P_FREE, P_OCC, MAP_SIZE, L2R
 from mapping import Mapping
 
 class Controller(object):
@@ -15,7 +14,7 @@ class Controller(object):
     self.arduino = serial.Serial('/dev/ttyUSB0', 9600) 
     self.screen = curses.initscr()
 
-    self.mapping = Mapping()
+    self.mapping = Mapping(MAP_SIZE, L2R, 1)
 
     curses.noecho()
     curses.cbreak()
@@ -65,7 +64,8 @@ class Controller(object):
   
   def create_map(self, grids):
       probabilities = [P_FREE]*grids + [P_OCC]
-      probabilities = compute_map_probability(probabilities)
+      print(probabilities)
+      #probabilities = (probabilities)
 
       print(f"probabilities : {probabilities}")
 
