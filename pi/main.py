@@ -5,7 +5,7 @@ from time import sleep
 from errors import QuitError
 from log_odds import compute_map_probability
 from constants import P_FREE, P_OCC
-from 
+from mapping import Mapping
 
 class Controller(object):
   def __init__(
@@ -15,8 +15,7 @@ class Controller(object):
     self.arduino = serial.Serial('/dev/ttyUSB0', 9600) 
     self.screen = curses.initscr()
 
-    self.__mapping = False
-    self.map = load_from_specification(map_specification)
+    self.mapping = Mapping()
 
     curses.noecho()
     curses.cbreak()

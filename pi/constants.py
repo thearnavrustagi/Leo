@@ -3,3 +3,5 @@ FREE = 0.0
 
 P_FREE = 0.4
 P_OCC = 0.6
+P_INIT = 0.5
+DEC_BOUNDARY = 0.5
