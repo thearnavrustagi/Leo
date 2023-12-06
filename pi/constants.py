@@ -1,2 +1,5 @@
 OCCUPIED = 1.0
 FREE = 0.0
+
+P_FREE = 0.4
+P_OCC = 0.6

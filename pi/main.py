@@ -1,19 +1,26 @@
 import serial
 import curses
+from time import sleep
 
 from errors import QuitError
+from log_odds import compute_map_probability
+from constants import P_FREE, P_OCC
+from 
 
 class Controller(object):
-  def __init__(self):
+  def __init__(
+          self,
+          map_specification:str="map_spec.txt"):
     super().__init__()
     self.arduino = serial.Serial('/dev/ttyUSB0', 9600) 
     self.screen = curses.initscr()
 
     self.__mapping = False
+    self.map = load_from_specification(map_specification)
 
     curses.noecho()
     curses.cbreak()
-    screen.keypad(True)
+    self.screen.keypad(True)
 
   def start_mapping(self):
     self.__mapping = True
@@ -32,21 +39,37 @@ class Controller(object):
     if char == ord('q'):
       raise QuitError("bye bye")
     elif char == curses.KEY_UP:
+      print("sending F")
       self.arduino.write(b'F') 
     elif char == curses.KEY_DOWN:
+      print("sending B")
       self.arduino.write(b'B')
     elif char == curses.KEY_LEFT:
+      print("sending L")
       self.arduino.write(b'L')
     elif char == curses.KEY_RIGHT:
+      print("sending R")
       self.arduino.write(b'R')
     elif char == ord(' '):
+      print("sending S")
       self.arduino.write(b'S')
-    elif char == ord('m'):
-      self.arduino.write(b'm')
-      resp = self.recv()
-      self.map(int(resp))
+    elif char == ord('m') or char == ord("M"):
+      print("sending M")
+      self.arduino.write(b'M')
+      resp = str(self.recv()).split(":")
+      self.arduino.write(b'S')
+      print(f"recv : {int(resp[1])}")
+      i = int(resp[1])
+      self.create_map(i)
     else:
-      self.arduino.write(byte(char))
+      self.arduino.write(bytes(char))
+  
+  def create_map(self, grids):
+      probabilities = [P_FREE]*grids + [P_OCC]
+      probabilities = compute_map_probability(probabilities)
+
+      print(f"probabilities : {probabilities}")
+
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}
@@ -67,7 +90,7 @@ U : read
           """)
 
   def close(self):
-    curses.nobreak()
+    curses.nocbreak()
     self.screen.keypad(False)
     curses.echo()
     curses.endwin()
@@ -82,8 +105,6 @@ U : read
 
 if __name__ == "__main__":
   cont = Controller()
-  cont.event_loop()
-
   try:
     cont.event_loop()
   finally:

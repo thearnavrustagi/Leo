@@ -1,0 +1,23 @@
+)0[1;67r[m[4l[?7h[H[J[67;1H======================================== CONTROLS ========================================
+KEY_UP   : to move forward
+KEY_DOWN : to move down
+KEY_RIGHT: to move right
+KEY_LEFT : to move left
+
+U        : to read data
+
+========================================  INPUTS  ========================================
+F : forward
+B : back
+L : left
+R : right
+S : stop
+U : read
+          
+sending F
+sending F
+sending M
+recv : 0
+0
+0.0
+sending R
