@@ -86,7 +86,7 @@ class Controller(object):
 
   def left(self) -> None:
       rpos = STATES[::-1]
-      self.state = STATES[(STATES.index(self.state)+1)%len(STATES)]
+      self.state = rpos[(rpos.index(self.state)+1)%len(rpos)]
       self.write(b'L')
 
   def update_map(self, grids):
