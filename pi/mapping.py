@@ -28,6 +28,7 @@ class Mapping(object):
             positions:List[Tuple[int]],
             probabilities:List[np.float64]) -> None:
 
+        print("probs",probabilities,"\nposns", positions)
         for (x, y), p in zip(positions, probabilities):
             if x not in range(0,MAP_SIZE[0]): continue
             if y not in range(0,MAP_SIZE[1]): continue

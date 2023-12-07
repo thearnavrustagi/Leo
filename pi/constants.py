@@ -14,7 +14,7 @@ LFT = 3
 INITIAL_STATE = STATES[FWD]
 
 FIG_SIZE = (4,3)
-INITIAL_POSN = (3,3)
+INITIAL_POSN = (0,0)
 MAP_SIZE = (5,5) # size of the
 L2R = lambda x,y,s : y*s[1] + x # Left to right
 T2B = lambda x,y,s : x*s[0] + y # Top to bottom

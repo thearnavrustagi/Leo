@@ -23,7 +23,11 @@ class Controller(object):
     self.state = initial_state
 
     self.mapping = Mapping(*map_args)
-    self.controls = []
+    self.controls = [
+            (ord("w"),b"W"),
+            (ord("a"),b"A"),
+            (ord("d"),b"D"),
+            ]
 
     curses.noecho()
     curses.cbreak()
@@ -34,9 +38,11 @@ class Controller(object):
 
   def recv(self) -> str:
     line = self.arduino.readline().decode('utf-8').strip()
+    open("out.txt","a").write(line)
     return line
 
   def send(self,char) -> None:
+    print("initial state :", self.state, "initial posn :", self.position)
     if char == ord('q'):
       raise QuitError("bye bye")
     elif char == curses.KEY_UP:
@@ -53,13 +59,14 @@ class Controller(object):
       self.write(b'M')
       resp = str(self.recv()).split(":")
       self.write(b'S')
-      print(f"recv : {int(resp[1])}")
+      print(f"recv : {resp}")
       i = int(resp[1])
       self.update_map(i)
-    """
     else:
-      self.write(bytes(char, encoding="utf-8"))
-      """
+        for i,x in self.controls:
+            if i == char:
+                self.write(x)
+    print("final state :", self.state, "final posn :", self.position)
   
   def write(self,c):
       print("sending",c)
@@ -85,13 +92,11 @@ class Controller(object):
   def update_map(self, grids):
       probabilities = [P_FREE]*grids + [P_OCC]
       def fnc (g,a,b): 
-        print("f:",g,a,b)
         return (a[0]+g*b[0],a[1]+g*b[1])
 
       g,a,b = range(1,grids+2), self.position,self.state
       positions = list(map(fnc, g,[a]*(grids+2),[b]*(grids+2)))
 
-      print(f"probabilities : {probabilities}, {positions}")
       self.mapping.update_log_odds(positions, probabilities)
       self.mapping.export()
 
