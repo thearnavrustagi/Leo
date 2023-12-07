@@ -109,15 +109,16 @@ class Controller(object):
   def path_plan(self):
       start = int(input("give start point"))
       end = int(input("give end point"))
-      self.send("p")
+      self.send("P")
       start,end = self.mapping.idx_to_posn(start), self.mapping.idx_to_posn(start)
       for instruction in get_path(start, end):
           self.send(instruction)
           _ = self.recv()
-      self.send("P")
+      self.send("p")
 
   def get_path (start, end):
-      yield 1
+    # return an array of F,R,L,B commands
+    return []
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}
