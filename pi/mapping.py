@@ -84,7 +84,7 @@ def discretize_mapping(mapping, decision_boundary=DEC_BOUNDARY):
 if __name__ == "__main__":
     print(MAP_SIZE)
     mapping = Mapping(MAP_SIZE, L2R, 1)
-    mapping.update_log_odds([(1,0),(1,1),(1,2),(1,3),(1,4)],[0.4,0.4,0.4,0.6])
-    mapping.update_log_odds([(1,1),(2,1),(3,1),(4,1)],[0.4,0.4,0.4,0.6])
+    mapping.update_log_odds([(1,0),(1,1),(1,2),(1,3),(1,4)],[0.1,0.1,0.1,0.8])
+    mapping.update_log_odds([(1,1),(2,1),(3,1),(4,1)],[0.1,0.1,0.1,0.8])
 
     mapping.export((1,0),(1,0))
