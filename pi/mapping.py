@@ -9,10 +9,10 @@ from constants import MAP_SIZE, L2R, T2B, DEC_BOUNDARY, P_INIT, FIG_SIZE
 class Mapping(object):
     def __init__(self,
             grid_size:tuple,
-            numbering_order:Callable,
+            numbering_order:Tuple(Callable),
             increment:int):
         self.grid_size = grid_size
-        self.numbering_order = numbering_order
+        (self.posn_to_idx, self.idx_to_posn) = numbering_order
         self.increment = increment
 
         self.log_odds_map = np.zeros(grid_size)

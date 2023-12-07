@@ -62,6 +62,10 @@ class Controller(object):
       print(f"recv : {resp}")
       i = int(resp[1])
       self.update_map(i)
+    elif char == ord('e') or char == ord('E'):
+        self.export_map()
+    elif char in (ord('p'), ord('P')):
+        self.path_plan()
     else:
         for i,x in self.controls:
             if i == char:
@@ -98,7 +102,22 @@ class Controller(object):
       positions = list(map(fnc, g,[a]*(grids+2),[b]*(grids+2)))
 
       self.mapping.update_log_odds(positions, probabilities)
+
+  def export_map(self):
       self.mapping.export()
+
+  def path_plan(self):
+      start = int(input("give start point"))
+      end = int(input("give end point"))
+      self.send("p")
+      start,end = self.mapping.idx_to_posn(start), self.mapping.idx_to_posn(start)
+      for instruction in get_path(start, end):
+          self.send(instruction)
+          _ = self.recv()
+      self.send("P")
+
+  def get_path (start, end):
+      yield 1
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}
