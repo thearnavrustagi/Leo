@@ -7,6 +7,7 @@ P_INIT = 0.5
 DEC_BOUNDARY = 0.5
 
 STATES = [(0,1),(1,0),(0,-1),(-1,0)]
+STATE_NAMES = "FORWARD RIGHT BACKWARD LEFT".split()
 FWD = 0
 RGT = 1
 BWD = 2

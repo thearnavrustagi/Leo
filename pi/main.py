@@ -104,7 +104,7 @@ class Controller(object):
       self.mapping.update_log_odds(positions, probabilities)
 
   def export_map(self):
-      self.mapping.export()
+      self.mapping.export(self.position, self.state)
 
   def path_plan(self):
       start = int(input("give start point"))
