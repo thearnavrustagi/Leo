@@ -107,18 +107,48 @@ class Controller(object):
       self.mapping.export(self.position, self.state)
 
   def path_plan(self):
-      start = int(input("give start point"))
-      end = int(input("give end point"))
-      self.send("P")
-      start,end = self.mapping.idx_to_posn(start), self.mapping.idx_to_posn(start)
-      for instruction in get_path(start, end):
-          self.send(instruction)
-          _ = self.recv()
-      self.send("p")
+      end = self.get_int("give end point")
+      end = self.mapping.idx_to_posn(end, self.mapping.grid_size)
+      print("end", end)
+      instructions = self.get_path(end)
+      print(f"intructions : {instructions}, end : {end}")
+      for instruction in instructions:
+          print(instruction)
+          match instruction:
+              case 'F':
+                  self.forward()
+              case 'R':
+                  self.right()
+              case 'L':
+                  self.left()
+              case 'B':
+                  self.backward()
 
-  def get_path (start, end):
-    # return an array of F,R,L,B commands
-    return []
+      
+  """
+  def get_path (self, start, end):
+    commands = []
+    x_dist, y_dist = end[0] - start[0], end[1] - start[1]
+    start_pose = self.state
+
+    if start_pose == (0, 1):
+        commands.extend(['F' * y_dist] if y_dist > 0 else ['B', 'F' * max(0, abs(y_dist) - 1)])
+        commands.extend(['R', 'F' * x_dist] if x_dist > 0 else ['L', 'F' * abs(x_dist)])
+
+    elif start_pose == (0, -1):
+        commands.extend(['B', 'F' * max(0, y_dist - 1)] if y_dist < 0 else ['F' * abs(y_dist)])
+        commands.extend(['L', 'F' * x_dist] if x_dist > 0 else ['R', 'F' * abs(x_dist)])
+
+    elif start_pose == (1, 0):
+        commands.extend(['F' * x_dist] if x_dist > 0 else ['B', 'F' * max(0, abs(x_dist) - 1)])
+        commands.extend(['L', 'F' * y_dist] if y_dist > 0 else ['R', 'F' * abs(y_dist)])
+
+    elif start_pose == (-1, 0):
+        commands.extend(['B', 'F' * max(0, x_dist - 1)] if x_dist < 0 else ['F' * abs(x_dist)])
+        commands.extend(['R', 'F' * y_dist] if y_dist > 0 else ['L', 'F' * abs(y_dist)])
+
+    return ''.join(commands)
+    """
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}
@@ -151,6 +181,14 @@ U : read
     while True:
       char = self.getch()
       self.send(char)
+
+  def get_int(self,prompt):
+    print(prompt)
+    ch, out = '', ''
+    while ch != '\n':
+        ch = chr(self.screen.getch())
+        out += ch
+    return int(out)
 
 if __name__ == "__main__":
   cont = Controller()
