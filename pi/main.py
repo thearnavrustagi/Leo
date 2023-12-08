@@ -107,10 +107,19 @@ class Controller(object):
       self.mapping.export(self.position, self.state)
 
   def path_plan(self):
+      start = self.get_int("give start point")
+      start_pose = self.get_int("give start pose")
       end = self.get_int("give end point")
+      end_pose = self.get_int("give end pose")
+
+      self.goto(start, start_pose)
+      sleep(10)
+      self.goto(end, end_pose)
+
+  def goto(self, end, end_pose):
       end = self.mapping.idx_to_posn(end, self.mapping.grid_size)
       print("end", end)
-      print(f"intructions : {instructions}, end : {end}")
+      print(f" end : {end}")
       for instruction in self.get_path(end):
           print(instruction)
           match instruction:
@@ -122,29 +131,34 @@ class Controller(object):
                   self.left()
               case 'B':
                   self.backward()
+          sleep(5)
+      print("I AM AT SOME POSE WHICH IS COOL")
+      while self.state != STATES[end_pose]:
+          self.right()
+
       
   def get_path(self, end_posn):
+      y_dist = end_posn[1] - self.position[1]
+      x_dist = end_posn[0] - self.position[0]
       while self.position != end_posn:
-          if self.position[1] != end_posn[1]
-              match self.state:
-                  case STATES[FWD]:
-                      yield 'F' if y_dist > 0 else 'B'
-                  case STATES[BWD]:
-                      yield 'F' if y_dist < 0 else 'B'
-                  case STATES[LFT]:
-                      yield 'R'
-                  case STATES[RGT]:
-                      yield 'L'
+          if self.position[1] != end_posn[1]:
+              if self.state == STATES[FWD]:
+                  yield 'F' if y_dist > 0 else 'B'
+              if self.state == STATES[BWD]:
+                  yield 'F' if y_dist < 0 else 'B'
+              if self.state == STATES[LFT]:
+                  yield 'R'
+              if self.state == STATES[RGT]:
+                  yield 'L'
           else:
-              match self.state:
-                  case STATES[FWD]:
-                      yield 'R'
-                  case STATES[BWD]:
-                      yield 'L'
-                  case STATES[LFT]:
-                      yield 'F' if x_dist < 0 else 'B'
-                  case STATES[RGT]:
-                      yield 'L' if x_dist > 0 else 'B'
+              if self.state ==  STATES[FWD]:
+                  yield 'R'
+              if self.state == STATES[BWD]:
+                  yield 'L'
+              if self.state == STATES[LFT]:
+                  yield 'F' if x_dist < 0 else 'B'
+              if self.state ==  STATES[RGT]:
+                  yield 'F' if x_dist > 0 else 'B'
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}
