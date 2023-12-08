@@ -3,7 +3,7 @@ import curses
 from time import sleep
 
 from errors import QuitError
-from constants import P_FREE, P_OCC, MAP_SIZE, L2R
+from constants import P_FREE, P_OCC, MAP_SIZE, L2R, T2B
 from constants import FWD, RGT, BWD, LFT, STATES, INITIAL_POSN, INITIAL_STATE
 from mapping import Mapping
 
@@ -12,7 +12,7 @@ class Controller(object):
           self,
           initial_position=INITIAL_POSN,
           initial_state=INITIAL_STATE,
-          map_args=(MAP_SIZE,L2R,1)):
+          map_args=(MAP_SIZE,T2B,1)):
     super().__init__()
     self.arduino = serial.Serial('/dev/ttyUSB0', 9600) 
     self.screen = curses.initscr()
@@ -82,6 +82,7 @@ class Controller(object):
 
   def backward(self) -> None:
       self.position = tuple(map(lambda a,b: a-b, self.position,self.state))
+      self.state = STATES[(STATES.index(self.state)+2)%len(STATES)]
       self.write(b'B')
 
   def right(self) -> None:
