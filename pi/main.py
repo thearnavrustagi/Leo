@@ -110,9 +110,8 @@ class Controller(object):
       end = self.get_int("give end point")
       end = self.mapping.idx_to_posn(end, self.mapping.grid_size)
       print("end", end)
-      instructions = self.get_path(end)
       print(f"intructions : {instructions}, end : {end}")
-      for instruction in instructions:
+      for instruction in self.get_path(end):
           print(instruction)
           match instruction:
               case 'F':
@@ -123,32 +122,29 @@ class Controller(object):
                   self.left()
               case 'B':
                   self.backward()
-
       
-  """
-  def get_path (self, start, end):
-    commands = []
-    x_dist, y_dist = end[0] - start[0], end[1] - start[1]
-    start_pose = self.state
-
-    if start_pose == (0, 1):
-        commands.extend(['F' * y_dist] if y_dist > 0 else ['B', 'F' * max(0, abs(y_dist) - 1)])
-        commands.extend(['R', 'F' * x_dist] if x_dist > 0 else ['L', 'F' * abs(x_dist)])
-
-    elif start_pose == (0, -1):
-        commands.extend(['B', 'F' * max(0, y_dist - 1)] if y_dist < 0 else ['F' * abs(y_dist)])
-        commands.extend(['L', 'F' * x_dist] if x_dist > 0 else ['R', 'F' * abs(x_dist)])
-
-    elif start_pose == (1, 0):
-        commands.extend(['F' * x_dist] if x_dist > 0 else ['B', 'F' * max(0, abs(x_dist) - 1)])
-        commands.extend(['L', 'F' * y_dist] if y_dist > 0 else ['R', 'F' * abs(y_dist)])
-
-    elif start_pose == (-1, 0):
-        commands.extend(['B', 'F' * max(0, x_dist - 1)] if x_dist < 0 else ['F' * abs(x_dist)])
-        commands.extend(['R', 'F' * y_dist] if y_dist > 0 else ['L', 'F' * abs(y_dist)])
-
-    return ''.join(commands)
-    """
+  def get_path(self, end_posn):
+      while self.position != end_posn:
+          if self.position[1] != end_posn[1]
+              match self.state:
+                  case STATES[FWD]:
+                      yield 'F' if y_dist > 0 else 'B'
+                  case STATES[BWD]:
+                      yield 'F' if y_dist < 0 else 'B'
+                  case STATES[LFT]:
+                      yield 'R'
+                  case STATES[RGT]:
+                      yield 'L'
+          else:
+              match self.state:
+                  case STATES[FWD]:
+                      yield 'R'
+                  case STATES[BWD]:
+                      yield 'L'
+                  case STATES[LFT]:
+                      yield 'F' if x_dist < 0 else 'B'
+                  case STATES[RGT]:
+                      yield 'L' if x_dist > 0 else 'B'
 
   def display_options(self):
     print(f"""{'='*40} CONTROLS {'='*40}
